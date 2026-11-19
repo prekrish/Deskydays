@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F766E}a:hover{color:#115E59}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F5F6F4; font-family: Inter, sans-serif; color: #15181C; display: flex; flex-direction: column">
+  <div style="padding: 28px 20px 0; display: flex; flex-direction: column; gap: 18px; flex-grow: 1">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <button aria-label="Previous month" style="width: 44px; height: 44px; border: none; background: #FFFFFF; border-radius: 14px; color: #15181C; display: flex; align-items: center; justify-content: center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+      </button>
+      <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600">November 2026</h1>
+      <button aria-label="Next month" style="width: 44px; height: 44px; border: none; background: #FFFFFF; border-radius: 14px; color: #15181C; display: flex; align-items: center; justify-content: center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 24px; padding: 16px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; font-size: 12px; font-weight: 600; color: #5B6168; text-align: center">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px">
+        <sc-for list="{{days}}" as="d" hint-placeholder-count="35">
+          <div style="{{d.style}}">{{d.label}}</div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; font-size: 13px; color: #3A4047">
+      <span style="display: flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 5px; background: #0F766E"></span>In office (4h+)</span>
+      <span style="display: flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 5px; background: #DDE0DC"></span>Remote</span>
+      <span style="display: flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 5px; background: #DBE6FB; border: 1.5px solid #2563EB; box-sizing: border-box"></span>Leave</span>
+      <span style="display: flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 5px; border: 2px solid #0F766E; box-sizing: border-box"></span>Today (in progress)</span>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 12px; color: #5B6168">Wed 18 Nov</span>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="font-size: 16px; font-weight: 600">In office · 6h 05m</span>
+        <span style="font-size: 13px; color: #5B6168">8:41 am – 4:46 pm</span>
+      </div>
+      <span style="font-size: 13px; color: #3A4047">2 visits merged (lunch break 22 min)</span>
+    </div>
+  </div>
+
+  <nav style="height: 72px; background: #FFFFFF; border-top: 1px solid #E6E8E5; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Today</a>
+    <a href="Calendar.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #0B5D55; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Calendar</a>
+    <a href="Stats.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Stats</a>
+    <a href="Setup.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Office</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var office = [3, 5, 10, 12, 13, 17, 18];
+    var remote = [2, 4, 9, 11, 16];
+    var leave = [6];
+    var base = 'height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-sizing: border-box; ';
+    var days = [];
+    for (var b = 0; b < 6; b++) days.push({ label: '', style: base });
+    for (var n = 1; n <= 30; n++) {
+      var dow = (6 + n - 1) % 7;
+      var s = base;
+      if (office.indexOf(n) >= 0) s += 'background: #0F766E; color: #FFFFFF; font-weight: 600;';
+      else if (remote.indexOf(n) >= 0) s += 'background: #DDE0DC; color: #15181C;';
+      else if (leave.indexOf(n) >= 0) s += 'background: #DBE6FB; color: #1E40AF; border: 1.5px solid #2563EB; font-weight: 600;';
+      else if (n === 19) s += 'border: 2px solid #0F766E; color: #0B5D55; font-weight: 700;';
+      else if (dow >= 5) s += 'color: #6B7178;';
+      else s += 'color: #15181C;';
+      days.push({ label: String(n), style: s });
+    }
+    return { days: days };
+  }
+}
+</script>
+</body>
+</html>

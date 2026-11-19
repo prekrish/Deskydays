@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Monthly stats</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F766E}a:hover{color:#115E59}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F5F6F4; font-family: Inter, sans-serif; color: #15181C; display: flex; flex-direction: column">
+  <div style="padding: 28px 20px 0; display: flex; flex-direction: column; gap: 16px; flex-grow: 1">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 600">Stats</h1>
+      <button style="height: 44px; padding: 0 14px; border: 1.5px solid #C9CDC8; background: transparent; border-radius: 14px; font-family: Inter, sans-serif; font-size: 14px; font-weight: 600; color: #15181C; display: flex; align-items: center; gap: 6px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>Export CSV
+      </button>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 13px; color: #5B6168">November so far</span>
+      <div style="display: flex; align-items: baseline; gap: 10px">
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 600; line-height: 1">35%</span>
+        <span style="font-size: 15px; color: #3A4047">target 50%</span>
+      </div>
+      <div style="position: relative; height: 12px; background: #E6E8E5; border-radius: 999px">
+        <div style="width: 35%; height: 12px; background: #0F766E; border-radius: 999px"></div>
+        <div style="position: absolute; left: 50%; top: -4px; width: 2px; height: 20px; background: #15181C"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; background: #FFF1E6; color: #8A3B0C; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 500">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+        Go in 3 of the next 7 working days
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+      <span style="font-size: 15px; font-weight: 600">How it's counted</span>
+      <div style="display: flex; justify-content: space-between"><span style="color: #3A4047">Working days in November</span><span style="font-weight: 600">21</span></div>
+      <div style="display: flex; justify-content: space-between"><span style="color: #3A4047">Leave</span><span style="font-weight: 600">− 1</span></div>
+      <div style="display: flex; justify-content: space-between"><span style="color: #3A4047">NSW public holidays</span><span style="font-weight: 600">− 0</span></div>
+      <div style="height: 1px; background: #E6E8E5"></div>
+      <div style="display: flex; justify-content: space-between"><span style="color: #3A4047">Days that count · 50% target</span><span style="font-weight: 600">20 · 10 days</span></div>
+      <div style="display: flex; justify-content: space-between"><span style="color: #3A4047">Office days so far</span><span style="font-weight: 600; color: #0B5D55">7</span></div>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <span style="font-size: 15px; font-weight: 600">Last 6 months</span>
+        <span style="font-size: 12px; color: #5B6168">line = 50%</span>
+      </div>
+      <div style="position: relative; height: 120px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: end">
+        <div style="position: absolute; left: 0; right: 0; bottom: 60px; border-top: 1.5px dashed #5B6168"></div>
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="6">
+          <div style="{{m.bar}}"></div>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; font-size: 12px; color: #5B6168; text-align: center">
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="6">
+          <span>{{m.label}}</span>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <nav style="height: 72px; background: #FFFFFF; border-top: 1px solid #E6E8E5; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Today</a>
+    <a href="Calendar.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Calendar</a>
+    <a href="Stats.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #0B5D55; font-size: 12px; font-weight: 600">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Stats</a>
+    <a href="Setup.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6168; font-size: 12px; font-weight: 500">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Office</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var data = [['Jun', 55], ['Jul', 48], ['Aug', 60], ['Sep', 52], ['Oct', 45], ['Nov', 35]];
+    var months = data.map(function (d, i) {
+      var h = Math.round(d[1] * 1.2);
+      var color = i === data.length - 1 ? 'background: #9FD3C9;' : (d[1] >= 50 ? 'background: #0F766E;' : 'background: #C2410C;');
+      return { label: d[0], bar: 'height: ' + h + 'px; border-radius: 8px 8px 4px 4px; ' + color };
+    });
+    return { months: months };
+  }
+}
+</script>
+</body>
+</html>
