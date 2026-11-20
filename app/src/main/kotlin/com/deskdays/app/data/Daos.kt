@@ -17,6 +17,12 @@ interface PresenceEventDao {
     @Query("SELECT * FROM presence_events WHERE timestampMillis >= :fromMillis AND timestampMillis < :toMillis ORDER BY timestampMillis")
     suspend fun between(fromMillis: Long, toMillis: Long): List<PresenceEventEntity>
 
+    @Query("SELECT * FROM presence_events WHERE source = :source ORDER BY timestampMillis DESC, id DESC LIMIT 1")
+    suspend fun latestBySource(source: String): PresenceEventEntity?
+
+    @Query("SELECT * FROM presence_events ORDER BY timestampMillis DESC, id DESC LIMIT :limit")
+    fun observeRecent(limit: Int): Flow<List<PresenceEventEntity>>
+
     @Query("DELETE FROM presence_events WHERE id = :id")
     suspend fun delete(id: Long)
 }

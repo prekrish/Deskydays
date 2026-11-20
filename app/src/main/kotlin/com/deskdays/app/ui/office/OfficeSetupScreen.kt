@@ -55,6 +55,7 @@ import com.deskdays.app.data.TrackingMode
 import com.deskdays.app.location.AddressLookup
 import com.deskdays.app.location.LocationAccess
 import com.deskdays.app.location.LocationPermissions
+import com.deskdays.app.tracking.TrackingState
 import com.deskdays.app.ui.components.CardDivider
 import com.deskdays.app.ui.components.DeskCard
 import com.deskdays.app.ui.components.LinkButton
@@ -75,6 +76,7 @@ fun OfficeSetupScreen(
     onDone: () -> Unit,
     onChangeTracking: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
+    onOpenDetectionLog: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as DeskDaysApp
@@ -85,8 +87,10 @@ fun OfficeSetupScreen(
     val focus = LocalFocusManager.current
 
     var access by remember { mutableStateOf(LocationPermissions.current(context)) }
+    var status by remember { mutableStateOf(app.container.trackingState.status) }
     LifecycleResumeEffect(Unit) {
         access = LocationPermissions.current(context)
+        status = app.container.trackingState.status
         onPauseOrDispose { }
     }
     val manual = form.trackingMode == TrackingMode.MANUAL
@@ -209,7 +213,8 @@ fun OfficeSetupScreen(
             RulesCard(form, vm)
 
             if (mode == OfficeSetupMode.SETTINGS) {
-                TrackingCard(manual = manual, access = access, onChange = onChangeTracking)
+                TrackingCard(manual = manual, access = access, status = status, onChange = onChangeTracking)
+                NavRow("Detection log", "", enabled = true, onClick = onOpenDetectionLog)
                 NavRow("Backup & restore", "Coming soon", enabled = false) {}
                 NavRow("Privacy policy", "", enabled = true, onClick = onOpenPrivacyPolicy)
             }
@@ -283,7 +288,7 @@ private fun StepButton(symbol: String, description: String, onClick: () -> Unit)
 }
 
 @Composable
-private fun TrackingCard(manual: Boolean, access: LocationAccess, onChange: () -> Unit) {
+private fun TrackingCard(manual: Boolean, access: LocationAccess, status: TrackingState.Status?, onChange: () -> Unit) {
     val (title, detail, action) = when {
         manual -> Triple("Tracking: manual", "You log office days yourself.", "Turn on automatic tracking")
         access == LocationAccess.PRECISE_ALWAYS -> Triple("Tracking: automatic", "Using your location in the background.", "Change")
@@ -292,6 +297,13 @@ private fun TrackingCard(manual: Boolean, access: LocationAccess, onChange: () -
     DeskCard {
         Text(title, style = MaterialTheme.typography.titleMedium)
         Text(detail, style = MaterialTheme.typography.bodyMedium, color = if (!manual && access != LocationAccess.PRECISE_ALWAYS) DeskColors.BelowTarget else DeskColors.TextBody)
+        if (!manual && status != null) {
+            Text(
+                "Status: ${status.text}",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (status.healthy) DeskColors.TextSecondary else DeskColors.BelowTarget,
+            )
+        }
         LinkButton(action, onChange)
     }
 }

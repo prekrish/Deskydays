@@ -18,7 +18,7 @@ You can turn automatic tracking off at any time and log days manually instead.
 
 ## Wi-Fi
 
-If you turn on "Confirm with office Wi-Fi", Desk Days saves the name (SSID) and hardware address (BSSID) of your office network, and checks whether your phone is connected to it. Android only lets apps read Wi-Fi names when they have location permission.
+If you turn on "Confirm with office Wi-Fi", Desk Days saves the name (SSID) and hardware address (BSSID) of your office network. While you're at the office, it checks about every 15 minutes whether your phone is connected to that network, and saves only the result (on or off the office network) with the time. It doesn't record other networks. Android only lets apps read Wi-Fi names when they have location permission.
 
 ## Where your data is stored
 

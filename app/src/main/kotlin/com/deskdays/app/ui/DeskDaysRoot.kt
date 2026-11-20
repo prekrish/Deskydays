@@ -29,6 +29,7 @@ import com.deskdays.app.DeskDaysApp
 import com.deskdays.app.R
 import com.deskdays.app.data.SettingsRepository
 import com.deskdays.app.data.TrackingMode
+import com.deskdays.app.ui.log.DetectionLogScreen
 import com.deskdays.app.ui.office.OfficeSetupMode
 import com.deskdays.app.ui.office.OfficeSetupScreen
 import com.deskdays.app.ui.onboarding.LocationAccessFlow
@@ -62,6 +63,7 @@ fun DeskDaysRoot() {
 private object Routes {
     const val TRACKING = "office/tracking"
     const val PRIVACY = "privacy"
+    const val LOG = "office/log"
 }
 
 @Composable
@@ -77,7 +79,7 @@ private fun MainTabs(settingsRepo: SettingsRepository) {
             NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                 Tab.entries.forEach { tab ->
                     val selected = current?.hierarchy?.any {
-                        it.route == tab.route || (tab == Tab.Office && it.route == Routes.TRACKING)
+                        it.route == tab.route || (tab == Tab.Office && (it.route == Routes.TRACKING || it.route == Routes.LOG))
                     } == true
                     NavigationBarItem(
                         selected = selected,
@@ -112,8 +114,10 @@ private fun MainTabs(settingsRepo: SettingsRepository) {
                     onDone = {},
                     onChangeTracking = { nav.navigate(Routes.TRACKING) },
                     onOpenPrivacyPolicy = { nav.navigate(Routes.PRIVACY) },
+                    onOpenDetectionLog = { nav.navigate(Routes.LOG) },
                 )
             }
+            composable(Routes.LOG) { DetectionLogScreen(onBack = { nav.popBackStack() }) }
             composable(Routes.TRACKING) {
                 LocationAccessFlow(
                     onAutomatic = {

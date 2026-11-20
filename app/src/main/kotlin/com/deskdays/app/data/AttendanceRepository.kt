@@ -10,6 +10,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 
 /** Raw inputs the :core calculator needs for a date range. */
 data class AttendanceInputs(
@@ -24,6 +25,12 @@ class AttendanceRepository(
     suspend fun record(type: EventType, source: EventSource, at: Instant = Instant.now()) {
         events.insert(PresenceEventEntity(timestampMillis = at.toEpochMilli(), type = type.name, source = source.name))
     }
+
+    suspend fun latest(source: EventSource): PresenceEvent? = events.latestBySource(source.name)?.toCore()
+
+    /** Newest first, for the detection log. */
+    fun observeRecent(limit: Int = 100): Flow<List<PresenceEvent>> =
+        events.observeRecent(limit).map { list -> list.mapNotNull { it.toCore() } }
 
     suspend fun setOverride(date: LocalDate, status: DayStatus, note: String? = null) {
         require(status in MANUAL_STATUSES)

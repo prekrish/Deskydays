@@ -84,7 +84,7 @@ licenses/        OFL licences for the bundled Inter and Space Grotesk fonts.
 Build order progress:
 - [x] 1. Scaffold, Room schema, pure counting/stats module with tests
 - [x] 2. Onboarding: disclosure, permissions, office setup (not yet built on a real SDK)
-- [ ] 3. Geofence registration + event logging
+- [x] 3. Geofence registration + event logging (not yet built on a real SDK)
 - [ ] 4. Today, Calendar, Stats screens (currently placeholders behind the bottom nav)
 - [ ] 5. Manual edits, leave, holidays, reminders, widget
 - [ ] 6. Drive backup/restore
@@ -109,6 +109,25 @@ background-denied each get their own screen with retry / app settings / "log man
 Choosing manual sets `TrackingMode.MANUAL` and lets office setup be skipped. The Office tab
 reuses the same flow to turn automatic tracking back on, and shows "Tracking is paused" if
 access is revoked. Step 3 (geofence registration) should hook into `TrackingMode` changes.
+
+### Background tracking (`app/.../tracking`)
+- `GeofenceSyncWorker` makes Play services' geofence match settings + permissions. It stores a
+  signature (lat,lng,radius) in `TrackingState` (SharedPreferences, deliberately *not* backed
+  up) and is a no-op when it already matches, so cold starts don't re-register.
+- Sync triggers: settings change (observer in `AppContainer.startTrackingSync`), every
+  `MainActivity.onResume`, boot / app update (forced, `SystemEventsReceiver`), daily (forced),
+  and `GEOFENCE_NOT_AVAILABLE` (location turned off; retries with backoff).
+- `GeofenceReceiver` records GEOFENCE ENTER/EXIT using the triggering fix time
+  (`core.resolveEventTime`). Initial trigger is ENTER only, never EXIT.
+- Wi‑Fi confirmation: on geofence ENTER, `WifiCheckWorker` runs now and every 15 min,
+  recording WIFI ENTER heartbeats while on the office SSID and a WIFI EXIT when it drops
+  (using the geofence exit time if triggered by one). Matching is by SSID only. It stops
+  itself once off Wi‑Fi and outside the geofence (`core.decideWifiCheck`).
+- Office tab → Detection log lists raw events; the tracking card shows the sync status.
+
+Testing on an emulator: use a Google Play system image, set the office, then move the
+emulator's location (Extended controls → Location, or `adb emu geo fix <lng> <lat>`) in and
+out of the radius. Transitions can take a couple of minutes (responsiveness is 2 min).
 
 ### Privacy policy
 `app/src/main/res/raw/privacy_policy.md` is shown in-app and is the text to host for the
