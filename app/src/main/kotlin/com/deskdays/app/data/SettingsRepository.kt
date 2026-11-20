@@ -28,12 +28,16 @@ data class Office(
     val wifiBssid: String? = null,
 )
 
+/** How presence is recorded. MANUAL is the fallback when location access is declined. */
+enum class TrackingMode { AUTOMATIC, MANUAL }
+
 data class Settings(
     val office: Office?,
     val rules: CountingRules,
     /** First day of tracking; earlier days don't count against the target. */
     val trackedFrom: LocalDate?,
     val onboardingDone: Boolean,
+    val trackingMode: TrackingMode,
 )
 
 class SettingsRepository(private val context: Context) {
@@ -53,6 +57,7 @@ class SettingsRepository(private val context: Context) {
         val countNonWorking = booleanPreferencesKey("count_non_working_days")
         val trackedFrom = stringPreferencesKey("tracked_from")
         val onboardingDone = booleanPreferencesKey("onboarding_done")
+        val trackingMode = stringPreferencesKey("tracking_mode")
     }
 
     val settings: Flow<Settings> = context.dataStore.data.map { it.toSettings() }
@@ -65,7 +70,27 @@ class SettingsRepository(private val context: Context) {
         p[Keys.wifiConfirm] = office.confirmWithWifi
         if (office.wifiSsid != null) p[Keys.wifiSsid] = office.wifiSsid else p.remove(Keys.wifiSsid)
         if (office.wifiBssid != null) p[Keys.wifiBssid] = office.wifiBssid else p.remove(Keys.wifiBssid)
-        if (p[Keys.trackedFrom] == null) p[Keys.trackedFrom] = LocalDate.now(ZoneId.of(p[Keys.zone] ?: DEFAULT_ZONE)).toString()
+        markTrackingStarted(p)
+    }
+
+    suspend fun clearOffice() = context.dataStore.edit { p ->
+        listOf(Keys.lat, Keys.lng, Keys.radius, Keys.address, Keys.wifiConfirm, Keys.wifiSsid, Keys.wifiBssid)
+            .forEach { p.remove(it) }
+    }
+
+    suspend fun setTrackingMode(mode: TrackingMode) = context.dataStore.edit { it[Keys.trackingMode] = mode.name }
+
+    /** Finishes onboarding and fixes the first counted day to today (only the first time). */
+    suspend fun completeOnboarding() = context.dataStore.edit { p ->
+        p[Keys.onboardingDone] = true
+        markTrackingStarted(p)
+    }
+
+    private fun markTrackingStarted(p: androidx.datastore.preferences.core.MutablePreferences) {
+        if (p[Keys.trackedFrom] == null) {
+            val zone = p[Keys.zone]?.let { runCatching { ZoneId.of(it) }.getOrNull() } ?: ZoneId.of(DEFAULT_ZONE)
+            p[Keys.trackedFrom] = LocalDate.now(zone).toString()
+        }
     }
 
     suspend fun setRules(rules: CountingRules) = context.dataStore.edit { p ->
@@ -76,8 +101,6 @@ class SettingsRepository(private val context: Context) {
         p[Keys.zone] = rules.zoneId.id
         p[Keys.countNonWorking] = rules.countNonWorkingDayAttendance
     }
-
-    suspend fun setOnboardingDone(done: Boolean) = context.dataStore.edit { it[Keys.onboardingDone] = done }
 
     private fun Preferences.toSettings(): Settings {
         val defaults = CountingRules()
@@ -114,6 +137,8 @@ class SettingsRepository(private val context: Context) {
             rules = rules,
             trackedFrom = this[Keys.trackedFrom]?.let { runCatching { LocalDate.parse(it) }.getOrNull() },
             onboardingDone = this[Keys.onboardingDone] ?: false,
+            trackingMode = this[Keys.trackingMode]
+                ?.let { runCatching { TrackingMode.valueOf(it) }.getOrNull() } ?: TrackingMode.MANUAL,
         )
     }
 

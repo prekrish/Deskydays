@@ -83,7 +83,7 @@ licenses/        OFL licences for the bundled Inter and Space Grotesk fonts.
 
 Build order progress:
 - [x] 1. Scaffold, Room schema, pure counting/stats module with tests
-- [ ] 2. Onboarding: disclosure, permissions, office setup
+- [x] 2. Onboarding: disclosure, permissions, office setup (not yet built on a real SDK)
 - [ ] 3. Geofence registration + event logging
 - [ ] 4. Today, Calendar, Stats screens (currently placeholders behind the bottom nav)
 - [ ] 5. Manual edits, leave, holidays, reminders, widget
@@ -96,6 +96,23 @@ Build order progress:
 - App: `./gradlew :app:assembleDebug` (needs the Android SDK, API 36, and Google Maven)
 
 `-PcoreOnly` drops `:app` and the Google Maven repo, so the logic can be tested anywhere.
+
+### Google Maps key
+The office map uses Maps Compose. Put `MAPS_API_KEY=...` in `local.properties` (git-ignored)
+or the environment. Restrict the key to Android apps with this package name + signing SHA-1.
+Without a key the app still builds and runs; office setup falls back to address search / GPS.
+
+### Onboarding flow (`app/.../ui/onboarding`)
+Disclosure → foreground precise location → separate "Allow all the time" step (Android 10+;
+on 11+ it opens system settings) → office setup. Approximate-only, denied and
+background-denied each get their own screen with retry / app settings / "log manually".
+Choosing manual sets `TrackingMode.MANUAL` and lets office setup be skipped. The Office tab
+reuses the same flow to turn automatic tracking back on, and shows "Tracking is paused" if
+access is revoked. Step 3 (geofence registration) should hook into `TrackingMode` changes.
+
+### Privacy policy
+`app/src/main/res/raw/privacy_policy.md` is shown in-app and is the text to host for the
+Play Console privacy policy URL. Keep them identical.
 
 ### Counting decisions made while implementing (all in `core/`)
 - Raw events are append-only (`presence_events`); everything else is recomputed, so changing
