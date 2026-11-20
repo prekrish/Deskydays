@@ -30,6 +30,10 @@ object DeskColors {
     val LeaveText = Color(0xFF1E40AF)
     val LeaveBorder = Color(0xFF2563EB)
     val BelowTarget = Color(0xFFC2410C)
+    val Holiday = Color(0xFFFDEBD3)
+    val HolidayText = Color(0xFF9A3412)
+    val Muted = Color(0xFF6B7178)
+    val CurrentMonthBar = Color(0xFF9FD3C9)
 }
 
 private fun variable(res: Int, weight: Int) = Font(

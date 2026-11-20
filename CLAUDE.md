@@ -85,7 +85,7 @@ Build order progress:
 - [x] 1. Scaffold, Room schema, pure counting/stats module with tests
 - [x] 2. Onboarding: disclosure, permissions, office setup (not yet built on a real SDK)
 - [x] 3. Geofence registration + event logging (not yet built on a real SDK)
-- [ ] 4. Today, Calendar, Stats screens (currently placeholders behind the bottom nav)
+- [x] 4. Today, Calendar, Stats screens (not yet built on a real SDK)
 - [ ] 5. Manual edits, leave, holidays, reminders, widget
 - [ ] 6. Drive backup/restore
 - [ ] 7. Play Billing tips
@@ -128,6 +128,15 @@ access is revoked. Step 3 (geofence registration) should hook into `TrackingMode
 Testing on an emulator: use a Google Play system image, set the office, then move the
 emulator's location (Extended controls → Location, or `adb emu geo fix <lng> <lat>`) in and
 out of the radius. Transitions can take a couple of minutes (responsiveness is 2 min).
+
+### Screens (`app/.../ui/today|calendar|stats`)
+- All three read `AttendanceFeed.observe`, which recomputes `DaySummary`s from raw events via
+  `core.AttendanceCalculator` whenever data/settings change and once a minute (ongoing visits).
+- Display logic lives in `core/Presentation.kt` (tested): `formatMinutes`, `todayProgress`,
+  `monthNudge`, `Visit.breakMinutes`.
+- "Fix today manually" and Calendar → Change open `DayStatusSheet` (Office / Remote / Leave /
+  Holiday / use detected). Editing visit times is still to do (step 5).
+- Stats → Export CSV writes every day from `trackedFrom` (or the last 12 months) to today.
 
 ### Privacy policy
 `app/src/main/res/raw/privacy_policy.md` is shown in-app and is the text to host for the

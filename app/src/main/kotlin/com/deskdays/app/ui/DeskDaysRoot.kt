@@ -36,7 +36,9 @@ import com.deskdays.app.ui.onboarding.LocationAccessFlow
 import com.deskdays.app.ui.onboarding.OnboardingFlow
 import com.deskdays.app.ui.privacy.PrivacyPolicyScreen
 import kotlinx.coroutines.launch
-import com.deskdays.app.ui.screens.PlaceholderScreen
+import com.deskdays.app.ui.calendar.CalendarScreen
+import com.deskdays.app.ui.stats.StatsScreen
+import com.deskdays.app.ui.today.TodayScreen
 import com.deskdays.app.ui.theme.DeskColors
 
 /** Bottom navigation tabs: Today · Calendar · Stats · Office. */
@@ -105,9 +107,9 @@ private fun MainTabs(settingsRepo: SettingsRepository) {
         },
     ) { padding ->
         NavHost(nav, startDestination = Tab.Today.route, modifier = Modifier.padding(padding)) {
-            composable(Tab.Today.route) { PlaceholderScreen("Today", "Progress ring, arrival time and month progress.") }
-            composable(Tab.Calendar.route) { PlaceholderScreen("Calendar", "Month grid and day details.") }
-            composable(Tab.Stats.route) { PlaceholderScreen("Stats", "Monthly % against target, history and CSV export.") }
+            composable(Tab.Today.route) { TodayScreen() }
+            composable(Tab.Calendar.route) { CalendarScreen() }
+            composable(Tab.Stats.route) { StatsScreen() }
             composable(Tab.Office.route) {
                 OfficeSetupScreen(
                     mode = OfficeSetupMode.SETTINGS,

@@ -24,6 +24,8 @@ class AppContainer(context: Context) {
 
     val attendance = AttendanceRepository(database.presenceEventDao(), database.dayOverrideDao())
 
+    val feed = AttendanceFeed(settings, attendance)
+
     val trackingState = TrackingState(app)
 
     val geofences = GeofenceManager(app)
