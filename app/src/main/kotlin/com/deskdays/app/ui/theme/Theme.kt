@@ -5,6 +5,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -36,6 +37,8 @@ object DeskColors {
     val CurrentMonthBar = Color(0xFF9FD3C9)
 }
 
+// Variable-font axes are still marked experimental in Compose; opt in so the weight axis is applied.
+@OptIn(ExperimentalTextApi::class)
 private fun variable(res: Int, weight: Int) = Font(
     resId = res,
     weight = FontWeight(weight),
